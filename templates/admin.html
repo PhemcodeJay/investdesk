@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InvestDesk — Admin</title>
-  <!-- Inter & Space Grotesk -->
+  <title>InvestDesk · Admin · Full CRUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -17,8 +16,6 @@
       min-height: 100vh;
       background: #f0f4fe;
     }
-
-    /* ----- LOGIN SCREEN with background image ----- */
     .login-shell {
       min-height: 100vh;
       display: flex;
@@ -136,10 +133,15 @@
     }
     .btn-danger:hover { background: #b91c1c; }
     .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
+    .btn-success {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: white;
+    }
+    .btn-success:hover { background: #15803d; }
 
     .hidden { display: none !important; }
 
-    /* ----- ADMIN SHELL (white panel) ----- */
     .admin-wrapper {
       max-width: 1440px;
       margin: 0 auto;
@@ -276,7 +278,7 @@
 
     .summary-strip {
       display: grid;
-      grid-template-columns: repeat(3,1fr);
+      grid-template-columns: repeat(4,1fr);
       gap: 0.8rem;
       margin-bottom: 2rem;
     }
@@ -299,6 +301,34 @@
       font-weight: 600;
       margin-top: 0.15rem;
     }
+
+    /* Error banner */
+    .error-banner {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: none;
+      font-size: 0.85rem;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .error-banner.show { display: flex; }
+    .error-banner .retry-btn {
+      background: #b91c1c;
+      color: white;
+      border: none;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+    }
+    .error-banner .retry-btn:hover { background: #991b1b; }
 
     .panel {
       background: #fafcff;
@@ -339,16 +369,38 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      padding: 0.2rem 0.4rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
       transition: 0.12s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      border: 1px solid transparent;
     }
-    .btn-icon:hover { background: #f1f5f9; }
-    .btn-icon.edit { color: #2563eb; }
-    .btn-icon.delete { color: #dc2626; }
+    .btn-icon:hover { opacity: 0.75; transform: scale(1.05); }
+    .btn-icon.edit {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-color: #b9d0f6;
+    }
+    .btn-icon.delete {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .btn-icon.create {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+    .btn-icon svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
 
-    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -426,6 +478,60 @@
     .toast.success { background: #0b1a2f; }
     .toast.error { background: #b91c1c; }
 
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .sync-badge svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    .user-badge {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 0.1rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .loading-row td {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+
+    .error-row td {
+      text-align: center;
+      padding: 2rem;
+      color: #dc2626;
+    }
+
+    .retry-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .retry-btn:hover {
+      background: #1d4ed8;
+    }
+
     @media (max-width:860px) {
       .rail { width:100%; border-right:none; border-bottom:1px solid #e8edf6; }
       .login-card { padding: 2rem 1.5rem; }
@@ -437,52 +543,49 @@
     }
     @media (max-width:600px) {
       .summary-strip { grid-template-columns: 1fr; }
-      table { font-size: 0.75rem; }
-      .actions-cell { flex-direction: column; gap: 0.2rem; }
+      table { font-size: 0.7rem; }
+      .actions-cell { flex-direction: row; gap: 0.2rem; }
+      .btn-icon { font-size: 0.65rem; padding: 0.15rem 0.4rem; }
     }
   </style>
 </head>
 <body>
-
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- ===== LOGIN SCREEN (with background image) ===== -->
+  <!-- LOGIN - Always shown first -->
   <div class="login-shell" id="loginShell">
     <div class="login-card">
       <div class="mark">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
         INVESTDESK
       </div>
-      <h1>Admin sign in</h1>
+      <h1>Admin Access</h1>
       <div class="login-error" id="loginError"></div>
       <form id="loginForm">
         <div class="field">
           <label for="loginUsername">Username</label>
-          <input type="text" id="loginUsername" autocomplete="username" required />
+          <input type="text" id="loginUsername" placeholder="admin" autocomplete="username" required />
         </div>
         <div class="field">
           <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" autocomplete="current-password" required />
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:6px;">Sign in</button>
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:6px;">
+          <span id="loginBtnText">Sign in</span>
+          <span class="loading-spinner hidden" id="loginSpinner" style="display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 0.6s ease-in-out infinite;"></span>
+        </button>
       </form>
+      <div style="margin-top:1rem;text-align:center;font-size:0.7rem;color:#94a3b8;">
+        <a href="/" style="color:#2563eb;text-decoration:none;">← Back to homepage</a>
+      </div>
     </div>
   </div>
 
-  <!-- ===== ADMIN SHELL (white panel on clean background) ===== -->
+  <!-- ADMIN SHELL - Only shown after successful admin login -->
   <div class="hidden" id="adminShell">
     <div class="admin-wrapper">
       <div class="ticker-tape">
-        <div class="ticker-track" id="tickerTrack">
-          <div class="ticker-item"><span class="sym">TSLA</span> $243.50 <span class="change-up">▲ 1.2%</span></div>
-          <div class="ticker-item"><span class="sym">AAPL</span> $178.20 <span class="change-up">▲ 0.6%</span></div>
-          <div class="ticker-item"><span class="sym">NVDA</span> $875.40 <span class="change-up">▲ 2.4%</span></div>
-          <div class="ticker-item"><span class="sym">MSFT</span> $415.10 <span class="change-down">▼ 0.2%</span></div>
-          <div class="ticker-item"><span class="sym">VNQ</span> $89.70 <span class="change-up">▲ 0.3%</span></div>
-          <div class="ticker-item"><span class="sym">BTC</span> $62,450 <span class="change-up">▲ 1.8%</span></div>
-          <div class="ticker-item"><span class="sym">ETH</span> $3,210 <span class="change-up">▲ 0.9%</span></div>
-        </div>
+        <div class="ticker-track" id="tickerTrack"></div>
       </div>
 
       <div class="shell">
@@ -492,20 +595,20 @@
               <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
               INVESTDESK
             </div>
-            <div class="sub">Admin console</div>
+            <div class="sub">Admin · Full CRUD</div>
           </div>
           <nav class="rail-nav">
-            <a class="rail-link" href="/dashboard">
+            <a class="rail-link" href="/dashboard" target="_blank">
               <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
               Dashboard
             </a>
-            <a class="rail-link active" href="/admin">
+            <a class="rail-link active" href="#">
               <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
               Admin panel
             </a>
           </nav>
           <div class="rail-foot">
-            <button class="btn btn-sm" id="logoutBtn" style="width:100%;">Sign out</button>
+            <button class="btn btn-sm btn-danger" id="logoutBtn" style="width:100%;">Sign out</button>
           </div>
         </aside>
 
@@ -513,52 +616,75 @@
           <div class="main-header">
             <h1>
               <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-              <span class="live-dot"></span> All user investments
+              <span class="live-dot"></span> Admin Panel
             </h1>
-            <div class="meta">Edit or delete any record below</div>
+            <div style="display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap;">
+              <span class="sync-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                Syncs with Dashboard
+              </span>
+              <span class="meta">Create · Edit · Delete</span>
+            </div>
+          </div>
+
+          <!-- Error banner -->
+          <div class="error-banner" id="errorBanner">
+            <span id="errorMessage">⚠️ Failed to load data</span>
+            <button class="retry-btn" id="retryBtn">🔄 Retry</button>
           </div>
 
           <div class="summary-strip">
-            <div class="summary-cell">
-              <div class="label">Total positions</div>
-              <div class="value" id="statTotalRows">0</div>
-            </div>
-            <div class="summary-cell">
-              <div class="label">Unique users</div>
-              <div class="value" id="statTotalUsers">0</div>
-            </div>
-            <div class="summary-cell">
-              <div class="label">Total market value</div>
-              <div class="value" id="statTotalValue">$0.00</div>
-            </div>
+            <div class="summary-cell"><div class="label">Total positions</div><div class="value" id="statTotalRows">0</div></div>
+            <div class="summary-cell"><div class="label">Unique users</div><div class="value" id="statTotalUsers">0</div></div>
+            <div class="summary-cell"><div class="label">Total invested</div><div class="value" id="statTotalInvested">$0.00</div></div>
+            <div class="summary-cell"><div class="label">Market value</div><div class="value" id="statTotalValue">$0.00</div></div>
           </div>
 
           <div class="panel">
             <div class="panel-head">
-              <h2>All holdings</h2>
-              <button class="btn btn-sm" id="refreshBtn">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                Refresh
-              </button>
+              <h2>All Holdings</h2>
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-sm btn-success" id="createBtn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                  New
+                </button>
+                <button class="btn btn-sm" id="refreshBtn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                  Refresh
+                </button>
+                <button class="btn btn-sm btn-danger" id="resetDbBtn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                  Reset DB
+                </button>
+              </div>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>User</th>
-                  <th>Symbol</th>
-                  <th>Shares</th>
-                  <th>Buy price</th>
-                  <th>Current</th>
-                  <th>Gain / loss</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="adminBody"></tbody>
-            </table>
-            <div class="empty-state" id="adminEmpty">
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Symbol</th>
+                    <th>Shares</th>
+                    <th>Buy price</th>
+                    <th>Cost basis</th>
+                    <th>Current price</th>
+                    <th>Market value</th>
+                    <th>Gain / loss</th>
+                    <th style="min-width:130px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBody">
+                  <tr class="loading-row">
+                    <td colspan="11">Loading investments...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="empty-state hidden" id="adminEmpty">
               <div class="icon">◌</div>
-              No investment records yet.
+              No records found. Click <strong>New</strong> to add one.
             </div>
           </div>
         </main>
@@ -566,50 +692,80 @@
     </div>
   </div>
 
-  <!-- ===== EDIT MODAL ===== -->
+  <!-- MODAL (create / edit) -->
   <div class="modal-overlay hidden" id="editModalOverlay">
     <div class="modal">
-      <h3>
+      <h3 id="modalTitle">
         <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-        Edit investment
+        <span id="modalTitleText">Edit investment</span>
       </h3>
       <form id="editForm">
         <input type="hidden" id="editId" />
         <div class="field">
-          <label for="editUserName">User</label>
-          <input type="text" id="editUserName" required />
+          <label for="editUserName">User Name *</label>
+          <input type="text" id="editUserName" required placeholder="e.g. Kaka90" />
         </div>
         <div class="field">
-          <label for="editSymbol">Symbol</label>
+          <label for="editEmail">Email</label>
+          <input type="email" id="editEmail" placeholder="user@example.com" />
+        </div>
+        <div class="field">
+          <label for="editSymbol">Symbol *</label>
           <select id="editSymbol" required>
             <option value="TSLA">TSLA — Tesla</option>
             <option value="AAPL">AAPL — Apple</option>
             <option value="NVDA">NVDA — NVIDIA</option>
             <option value="MSFT">MSFT — Microsoft</option>
-            <option value="VNQ">VNQ — Real Estate (ETF)</option>
           </select>
         </div>
         <div class="field">
-          <label for="editShares">Shares</label>
-          <input type="number" id="editShares" step="0.0001" min="0.0001" required />
+          <label for="editShares">Shares *</label>
+          <input type="number" id="editShares" step="0.0001" min="0.0001" required placeholder="e.g. 10" />
         </div>
         <div class="field">
-          <label for="editBuyPrice">Buy price (per share, $)</label>
-          <input type="number" id="editBuyPrice" step="0.01" min="0.01" required />
+          <label for="editBuyPrice">Buy Price ($) *</label>
+          <input type="number" id="editBuyPrice" step="0.01" min="0.01" required placeholder="e.g. 150.00" />
         </div>
         <div class="modal-actions">
           <button type="button" class="btn" id="cancelEdit">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary" id="modalSubmitBtn">Save</button>
         </div>
       </form>
     </div>
   </div>
 
+  <style>
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.6s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
   <script>
     (function() {
-      // ============================================================
-      // TOAST
-      // ============================================================
+      // ─── HARDCODED ADMIN CREDENTIALS (matches server) ───
+      const ADMIN_CREDENTIALS = {
+        username: 'admin',
+        password: 'admin123'
+      };
+
+      const ALLOWED_SYMBOLS = ['TSLA', 'AAPL', 'NVDA', 'MSFT'];
+      let allInvestments = [];
+      let pricesCache = {};
+      let isLoading = false;
+      let retryCount = 0;
+      const MAX_RETRIES = 3;
+      let refreshInterval = null;
+
+      // ----- Toast -----
       const toast = document.getElementById('toast');
       let toastTimer = null;
 
@@ -617,43 +773,33 @@
         if (toastTimer) clearTimeout(toastTimer);
         toast.textContent = msg;
         toast.className = 'toast ' + type + ' show';
-        toastTimer = setTimeout(() => {
-          toast.classList.remove('show');
-        }, 3000);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
       }
 
-      // ============================================================
-      // AUTH CHECK
-      // ============================================================
+      // ----- Error Banner -----
+      const errorBanner = document.getElementById('errorBanner');
+      const errorMessage = document.getElementById('errorMessage');
+
+      function showError(msg) {
+        errorMessage.textContent = '⚠️ ' + msg;
+        errorBanner.classList.add('show');
+      }
+
+      function hideError() {
+        errorBanner.classList.remove('show');
+      }
+
+      // ----- DOM Elements -----
       const loginShell = document.getElementById('loginShell');
       const adminShell = document.getElementById('adminShell');
       const loginError = document.getElementById('loginError');
       const loginForm = document.getElementById('loginForm');
       const loginUsername = document.getElementById('loginUsername');
       const loginPassword = document.getElementById('loginPassword');
+      const loginBtnText = document.getElementById('loginBtnText');
+      const loginSpinner = document.getElementById('loginSpinner');
 
-      async function checkAdminSession() {
-        try {
-          const res = await fetch('/api/admin/session');
-          const data = await res.json();
-          if (data.is_admin) {
-            loginShell.classList.add('hidden');
-            adminShell.classList.remove('hidden');
-            loadAdminData();
-          } else {
-            loginShell.classList.remove('hidden');
-            adminShell.classList.add('hidden');
-          }
-        } catch (e) {
-          console.warn('Session check failed:', e);
-          loginShell.classList.remove('hidden');
-          adminShell.classList.add('hidden');
-        }
-      }
-
-      // ============================================================
-      // LOGIN
-      // ============================================================
+      // ----- Admin Login (Server-side auth) -----
       loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         loginError.classList.remove('show');
@@ -668,10 +814,16 @@
           return;
         }
 
+        // Show loading state
+        loginBtnText.textContent = 'Signing in...';
+        loginSpinner.style.display = 'inline-block';
+        loginForm.querySelector('button[type="submit"]').disabled = true;
+
         try {
           const res = await fetch('/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({ username, password })
           });
           const data = await res.json();
@@ -679,258 +831,564 @@
           if (data.ok) {
             loginShell.classList.add('hidden');
             adminShell.classList.remove('hidden');
-            showToast('Welcome, Admin!', 'success');
-            loadAdminData();
+            sessionStorage.setItem('admin_logged_in', 'true');
+            showToast('✅ Welcome, Admin!', 'success');
+            await loadAdminData();
+            await updateTicker();
+
+            if (refreshInterval) clearInterval(refreshInterval);
+            refreshInterval = setInterval(async () => {
+              if (!adminShell.classList.contains('hidden')) {
+                await loadAdminData(false);
+                await updateTicker();
+              }
+            }, 30000);
           } else {
             loginError.textContent = data.error || 'Invalid username or password.';
             loginError.classList.add('show');
+            loginPassword.value = '';
+            loginPassword.focus();
           }
         } catch (e) {
+          console.error('Login error:', e);
           loginError.textContent = 'Network error. Please try again.';
           loginError.classList.add('show');
+        } finally {
+          loginBtnText.textContent = 'Sign in';
+          loginSpinner.style.display = 'none';
+          loginForm.querySelector('button[type="submit"]').disabled = false;
         }
       });
 
-      // ============================================================
-      // LOGOUT
-      // ============================================================
+      // Allow Enter key to submit
+      loginPassword.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          loginForm.dispatchEvent(new Event('submit'));
+        }
+      });
+
+      // ----- Logout -----
       document.getElementById('logoutBtn').addEventListener('click', async function() {
         try {
-          await fetch('/api/admin/logout', { method: 'POST' });
-        } catch (e) { /* ignore */ }
-        sessionStorage.removeItem('investdesk_user');
-        loginShell.classList.remove('hidden');
+          await fetch('/api/admin/logout', {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+        } catch (e) {}
+
+        sessionStorage.removeItem('admin_logged_in');
+        if (refreshInterval) clearInterval(refreshInterval);
         adminShell.classList.add('hidden');
+        loginShell.classList.remove('hidden');
+        loginPassword.value = '';
         showToast('Signed out.', 'success');
       });
 
-      // ============================================================
-      // LOAD ADMIN DATA
-      // ============================================================
-      async function loadAdminData() {
+      // ----- Retry button -----
+      document.getElementById('retryBtn').addEventListener('click', function() {
+        retryCount = 0;
+        hideError();
+        loadAdminData(true);
+        showToast('🔄 Retrying...', 'success');
+      });
+
+      // ----- Data Loading with Retry -----
+      async function fetchPrices() {
         try {
-          const invRes = await fetch('/api/admin/investments');
-          if (!invRes.ok) throw new Error('Failed to fetch investments');
-          const investments = await invRes.json();
-
-          const priceRes = await fetch('/api/prices');
-          const priceData = await priceRes.json();
-          const prices = priceData.prices || {};
-
-          renderAdminTable(investments, prices);
-          updateStats(investments, prices);
-
+          const res = await fetch('/api/prices', { credentials: 'same-origin' });
+          if (!res.ok) throw new Error('Failed to fetch prices: ' + res.status);
+          const data = await res.json();
+          pricesCache = data.prices || {};
+          return pricesCache;
         } catch (e) {
-          console.error('Error loading admin data:', e);
-          showToast('Failed to load data. Please refresh.', 'error');
+          console.error('Failed to fetch prices:', e);
+          return {};
         }
       }
 
-      // ============================================================
-      // RENDER TABLE
-      // ============================================================
+      async function loadAdminData(retry = true) {
+        if (isLoading) return;
+        isLoading = true;
+
+        const tbody = document.getElementById('adminBody');
+        const empty = document.getElementById('adminEmpty');
+
+        try {
+          tbody.innerHTML = '<tr class="loading-row"><td colspan="11">Loading investments...</td></tr>';
+          empty.classList.add('hidden');
+          hideError();
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+          const invRes = await fetch('/api/admin/investments', {
+            credentials: 'same-origin',
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+
+          if (invRes.status === 401) {
+            showToast('Session expired. Please login again.', 'error');
+            adminShell.classList.add('hidden');
+            loginShell.classList.remove('hidden');
+            sessionStorage.removeItem('admin_logged_in');
+            if (refreshInterval) clearInterval(refreshInterval);
+            isLoading = false;
+            return;
+          }
+
+          if (!invRes.ok) {
+            const errorText = await invRes.text();
+            console.error('Failed to fetch investments:', errorText);
+            throw new Error(`Failed to fetch investments: ${invRes.status}`);
+          }
+
+          const data = await invRes.json();
+          allInvestments = data || [];
+          console.log('Loaded investments:', allInvestments.length);
+
+          retryCount = 0;
+          await fetchPrices();
+
+          renderAdminTable(allInvestments, pricesCache);
+          updateStats(allInvestments, pricesCache);
+
+        } catch (e) {
+          console.error('Error loading admin data:', e);
+
+          if (e.name === 'AbortError') {
+            tbody.innerHTML = `<tr class="error-row"><td colspan="11">⏱️ Request timed out. The server might be starting up.</td></tr>`;
+            showError('Request timed out. The server might be starting up.');
+
+            if (retry && retryCount < MAX_RETRIES) {
+              retryCount++;
+              const delay = 2000 * retryCount;
+              showToast(`⏱️ Retrying in ${delay/1000}s... (attempt ${retryCount}/${MAX_RETRIES})`, 'error');
+              setTimeout(() => {
+                loadAdminData(true);
+              }, delay);
+            } else if (retryCount >= MAX_RETRIES) {
+              showError('Max retries reached. Please click Retry or Refresh.');
+            }
+          } else {
+            tbody.innerHTML = `
+              <tr class="error-row">
+                <td colspan="11">
+                  ❌ Error loading data: ${e.message}
+                  <br>
+                  <button class="retry-btn" onclick="window.retryLoadData()">🔄 Retry</button>
+                </td>
+              </tr>
+            `;
+            showError(e.message || 'Failed to load data');
+            showToast('❌ Failed to load data. Click Retry or Refresh.', 'error');
+          }
+        } finally {
+          isLoading = false;
+        }
+      }
+
+      window.retryLoadData = function() {
+        retryCount = 0;
+        hideError();
+        loadAdminData(true);
+      };
+
       function renderAdminTable(investments, prices) {
         const tbody = document.getElementById('adminBody');
         const empty = document.getElementById('adminEmpty');
 
         if (!investments || investments.length === 0) {
           tbody.innerHTML = '';
-          empty.style.display = 'block';
+          empty.classList.remove('hidden');
           return;
         }
-        empty.style.display = 'none';
+        empty.classList.add('hidden');
 
         let html = '';
         investments.forEach(inv => {
           const priceInfo = prices[inv.symbol] || { price: null, change_pct: null };
           const currentPrice = priceInfo.price;
-          const changePct = priceInfo.change_pct;
-
-          const marketValue = currentPrice ? (currentPrice * inv.shares) : null;
           const costBasis = inv.buy_price * inv.shares;
-          const gain = marketValue !== null ? (marketValue - costBasis) : null;
+          const marketValue = currentPrice ? (currentPrice * inv.shares) : costBasis;
+          const gain = currentPrice ? (marketValue - costBasis) : null;
           const gainPct = (gain !== null && costBasis > 0) ? (gain / costBasis * 100) : null;
-
           const gainClass = gain !== null ? (gain >= 0 ? 'color:#22c55e;' : 'color:#dc2626;') : '';
+          const gainDisplay = gain !== null ? (gain >= 0 ? '+' : '') + gain.toFixed(2) : '—';
+          const pctDisplay = gainPct !== null ? (gainPct >= 0 ? '+' : '') + gainPct.toFixed(1) + '%' : '—';
 
           html += `
             <tr data-id="${inv.id}">
               <td>${inv.id}</td>
-              <td>${escapeHtml(inv.user_name)}</td>
+              <td><span class="user-badge">${escapeHtml(inv.user_name)}</span></td>
+              <td>${escapeHtml(inv.email || '—')}</td>
               <td><strong>${inv.symbol}</strong></td>
               <td>${inv.shares}</td>
               <td>$${inv.buy_price.toFixed(2)}</td>
+              <td>$${costBasis.toFixed(2)}</td>
               <td>${currentPrice !== null ? '$' + currentPrice.toFixed(2) : '—'}</td>
-              <td style="${gainClass}">
-                ${gain !== null ? '$' + gain.toFixed(2) + ' (' + (gainPct !== null ? (gainPct >= 0 ? '+' : '') + gainPct.toFixed(1) + '%)' : '—') : '—'}
-              </td>
+              <td>$${marketValue.toFixed(2)}</td>
+              <td style="${gainClass}">${gain !== null ? '$' + gainDisplay + ' (' + pctDisplay + ')' : '—'}</td>
               <td>
                 <div class="actions-cell">
-                  <button class="btn-icon edit" data-id="${inv.id}" title="Edit">✏️</button>
-                  <button class="btn-icon delete" data-id="${inv.id}" title="Delete">🗑️</button>
+                  <button class="btn-icon edit" onclick="window.editInvestment(${inv.id})" title="Edit">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    Edit
+                  </button>
+                  <button class="btn-icon delete" onclick="window.deleteInvestment(${inv.id})" title="Delete">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    Delete
+                  </button>
+                  <button class="btn-icon create" onclick="window.copyInvestment(${inv.id})" title="Create similar">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Copy
+                  </button>
                 </div>
               </td>
             </tr>
           `;
         });
-
         tbody.innerHTML = html;
-
-        tbody.querySelectorAll('.btn-icon.edit').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            const inv = investments.find(i => i.id === id);
-            if (inv) openEditModal(inv);
-          });
-        });
-
-        tbody.querySelectorAll('.btn-icon.delete').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            if (confirm('Delete this investment record?')) {
-              deleteInvestment(id);
-            }
-          });
-        });
       }
 
-      // ============================================================
-      // UPDATE STATS
-      // ============================================================
       function updateStats(investments, prices) {
         const totalRows = investments.length;
         const uniqueUsers = new Set(investments.map(i => i.user_name)).size;
-
+        let totalInvested = 0;
         let totalValue = 0;
+
         investments.forEach(inv => {
+          const costBasis = inv.buy_price * inv.shares;
+          totalInvested += costBasis;
+
           const priceInfo = prices[inv.symbol] || { price: null };
           if (priceInfo.price !== null) {
             totalValue += priceInfo.price * inv.shares;
+          } else {
+            totalValue += costBasis;
           }
         });
 
         document.getElementById('statTotalRows').textContent = totalRows;
         document.getElementById('statTotalUsers').textContent = uniqueUsers;
+        document.getElementById('statTotalInvested').textContent = '$' + totalInvested.toFixed(2);
         document.getElementById('statTotalValue').textContent = '$' + totalValue.toFixed(2);
       }
 
-      // ============================================================
-      // EDIT MODAL
-      // ============================================================
+      async function updateTicker() {
+        try {
+          const prices = await fetchPrices();
+          const track = document.getElementById('tickerTrack');
+          let html = '';
+
+          if (Object.keys(prices).length === 0) {
+            track.innerHTML = '<div class="ticker-item">Loading prices...</div>';
+            return;
+          }
+
+          Object.entries(prices).forEach(([symbol, data]) => {
+            const changeClass = data.change_pct >= 0 ? 'change-up' : 'change-down';
+            const arrow = data.change_pct >= 0 ? '▲' : '▼';
+            html += `
+              <div class="ticker-item">
+                <span class="sym">${symbol}</span> 
+                $${data.price ? data.price.toFixed(2) : 'N/A'} 
+                <span class="${changeClass}">${arrow} ${data.change_pct ? data.change_pct.toFixed(1) : '0.0'}%</span>
+              </div>
+            `;
+          });
+
+          track.innerHTML = html + html;
+        } catch (e) {
+          console.error('Error updating ticker:', e);
+        }
+      }
+
+      // ----- Modal Functions -----
       const editOverlay = document.getElementById('editModalOverlay');
       const editId = document.getElementById('editId');
       const editUserName = document.getElementById('editUserName');
+      const editEmail = document.getElementById('editEmail');
       const editSymbol = document.getElementById('editSymbol');
       const editShares = document.getElementById('editShares');
       const editBuyPrice = document.getElementById('editBuyPrice');
       const cancelEdit = document.getElementById('cancelEdit');
+      const modalTitleText = document.getElementById('modalTitleText');
+      const modalSubmitBtn = document.getElementById('modalSubmitBtn');
 
-      let currentEditId = null;
+      let currentMode = 'edit';
 
-      function openEditModal(inv) {
-        currentEditId = inv.id;
-        editId.value = inv.id;
-        editUserName.value = inv.user_name;
-        editSymbol.value = inv.symbol;
-        editShares.value = inv.shares;
-        editBuyPrice.value = inv.buy_price;
-        editOverlay.classList.remove('hidden');
-      }
-
-      cancelEdit.addEventListener('click', () => {
-        editOverlay.classList.add('hidden');
-        currentEditId = null;
-      });
-
-      editOverlay.addEventListener('click', (e) => {
-        if (e.target === editOverlay) {
-          editOverlay.classList.add('hidden');
-          currentEditId = null;
-        }
-      });
-
-      // ============================================================
-      // SAVE EDIT
-      // ============================================================
-      document.getElementById('editForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (currentEditId === null) return;
-
-        const payload = {
-          user_name: editUserName.value.trim(),
-          symbol: editSymbol.value,
-          shares: parseFloat(editShares.value),
-          buy_price: parseFloat(editBuyPrice.value)
-        };
-
-        try {
-          const res = await fetch(`/api/admin/investments/${currentEditId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-
-          if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || 'Update failed');
-          }
-
-          editOverlay.classList.add('hidden');
-          showToast('Investment updated successfully!', 'success');
+      window.editInvestment = function(id) {
+        const inv = allInvestments.find(i => i.id === id);
+        if (inv) {
+          openEditModal(inv, 'edit');
+        } else {
+          showToast('Investment not found. Please refresh.', 'error');
           loadAdminData();
-          currentEditId = null;
-        } catch (e) {
-          showToast(e.message || 'Error updating investment.', 'error');
         }
-      });
+      };
 
-      // ============================================================
-      // DELETE INVESTMENT
-      // ============================================================
-      async function deleteInvestment(id) {
+      window.deleteInvestment = async function(id) {
+        if (!confirm('Delete this investment record?')) return;
+
         try {
           const res = await fetch(`/api/admin/investments/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'same-origin'
           });
+
+          if (res.status === 401) {
+            showToast('Session expired. Please login again.', 'error');
+            adminShell.classList.add('hidden');
+            loginShell.classList.remove('hidden');
+            sessionStorage.removeItem('admin_logged_in');
+            if (refreshInterval) clearInterval(refreshInterval);
+            return;
+          }
 
           if (!res.ok) {
             const err = await res.json();
             throw new Error(err.error || 'Delete failed');
           }
 
-          showToast('Investment deleted successfully!', 'success');
-          loadAdminData();
+          showToast('Investment deleted.', 'success');
+          await loadAdminData();
+          await updateTicker();
+
+          if (window.opener && !window.opener.closed) {
+            try {
+              window.opener.postMessage({ type: 'REFRESH_DASHBOARD' }, '*');
+            } catch (e) {}
+          }
         } catch (e) {
-          showToast(e.message || 'Error deleting investment.', 'error');
+          console.error('Delete error:', e);
+          showToast(e.message || 'Error deleting.', 'error');
         }
+      };
+
+      window.copyInvestment = function(id) {
+        const inv = allInvestments.find(i => i.id === id);
+        if (inv) {
+          const copy = { ...inv, id: null };
+          openEditModal(copy, 'create');
+        }
+      };
+
+      function openEditModal(inv, mode = 'edit') {
+        currentMode = mode;
+        if (mode === 'create') {
+          modalTitleText.textContent = 'Create New Investment';
+          modalSubmitBtn.textContent = 'Create';
+          editId.value = '';
+          editUserName.value = inv.user_name || '';
+          editEmail.value = inv.email || '';
+          editSymbol.value = inv.symbol || 'TSLA';
+          editShares.value = inv.shares || 1;
+          editBuyPrice.value = inv.buy_price || 100;
+        } else {
+          modalTitleText.textContent = 'Edit Investment';
+          modalSubmitBtn.textContent = 'Save Changes';
+          editId.value = inv.id;
+          editUserName.value = inv.user_name;
+          editEmail.value = inv.email || '';
+          editSymbol.value = inv.symbol;
+          editShares.value = inv.shares;
+          editBuyPrice.value = inv.buy_price;
+        }
+        editOverlay.classList.remove('hidden');
       }
 
-      // ============================================================
-      // REFRESH
-      // ============================================================
-      document.getElementById('refreshBtn').addEventListener('click', function() {
-        loadAdminData();
-        showToast('Refreshing data...', 'success');
+      cancelEdit.addEventListener('click', () => editOverlay.classList.add('hidden'));
+      editOverlay.addEventListener('click', (e) => {
+        if (e.target === editOverlay) editOverlay.classList.add('hidden');
       });
 
-      // ============================================================
-      // UTILITY
-      // ============================================================
+      // ----- Submit Edit Form -----
+      document.getElementById('editForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const symbol = editSymbol.value;
+        if (!ALLOWED_SYMBOLS.includes(symbol)) {
+          showToast('Only TSLA, AAPL, NVDA, MSFT are allowed.', 'error');
+          return;
+        }
+
+        const payload = {
+          user_name: editUserName.value.trim(),
+          email: editEmail.value.trim(),
+          symbol: symbol,
+          shares: parseFloat(editShares.value),
+          buy_price: parseFloat(editBuyPrice.value)
+        };
+
+        if (isNaN(payload.shares) || isNaN(payload.buy_price) || payload.shares <= 0 || payload.buy_price <= 0) {
+          showToast('Please enter valid numbers for shares and buy price.', 'error');
+          return;
+        }
+
+        const submitBtn = document.getElementById('modalSubmitBtn');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+
+        try {
+          let url, method;
+          if (currentMode === 'create') {
+            url = '/api/admin/investments';
+            method = 'POST';
+          } else {
+            const id = parseInt(editId.value);
+            if (!id || isNaN(id)) {
+              showToast('Invalid record ID.', 'error');
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+              return;
+            }
+            url = `/api/admin/investments/${id}`;
+            method = 'PUT';
+          }
+
+          const res = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload)
+          });
+
+          if (res.status === 401) {
+            showToast('Session expired. Please login again.', 'error');
+            adminShell.classList.add('hidden');
+            loginShell.classList.remove('hidden');
+            sessionStorage.removeItem('admin_logged_in');
+            if (refreshInterval) clearInterval(refreshInterval);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          const responseText = await res.text();
+          let responseData;
+          try {
+            responseData = JSON.parse(responseText);
+          } catch (parseError) {
+            throw new Error('Server returned invalid response.');
+          }
+
+          if (!res.ok) {
+            throw new Error(responseData.error || 'Operation failed');
+          }
+
+          editOverlay.classList.add('hidden');
+          showToast(currentMode === 'create' ? '✅ Investment created!' : '✅ Investment updated!', 'success');
+
+          await loadAdminData();
+          await updateTicker();
+
+          if (window.opener && !window.opener.closed) {
+            try {
+              window.opener.postMessage({ type: 'REFRESH_DASHBOARD' }, '*');
+            } catch (e) {}
+          }
+        } catch (e) {
+          console.error('Error saving investment:', e);
+          showToast('❌ ' + (e.message || 'Error saving investment.'), 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+
+      // ----- Reset Database -----
+      document.getElementById('resetDbBtn').addEventListener('click', async function() {
+        if (!confirm('⚠️ This will delete ALL investment data and reset the database. Are you sure?')) return;
+        if (!confirm('⚠️⚠️ This action cannot be undone! All investments will be permanently deleted. Continue?')) return;
+
+        try {
+          const btn = this;
+          const originalText = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Resetting...';
+
+          const res = await fetch('/api/admin/reset-db', {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            showToast('✅ Database reset successfully!', 'success');
+            await loadAdminData();
+            await updateTicker();
+          } else {
+            throw new Error(data.error || 'Failed to reset database');
+          }
+
+          btn.disabled = false;
+          btn.textContent = originalText;
+        } catch (e) {
+          console.error('Reset DB error:', e);
+          showToast('❌ ' + e.message, 'error');
+        }
+      });
+
+      // ----- Create New -----
+      document.getElementById('createBtn').addEventListener('click', function() {
+        const blank = { user_name: '', email: '', symbol: 'TSLA', shares: 1, buy_price: 100 };
+        openEditModal(blank, 'create');
+      });
+
+      // ----- Refresh -----
+      document.getElementById('refreshBtn').addEventListener('click', async function() {
+        retryCount = 0;
+        hideError();
+        await loadAdminData();
+        await updateTicker();
+        showToast('Refreshed!', 'success');
+      });
+
+      // ----- Helpers -----
       function escapeHtml(text) {
+        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
 
-      // ============================================================
-      // INIT
-      // ============================================================
-      loginUsername.value = 'admin';
-      loginPassword.value = 'admin123';
-      checkAdminSession();
+      // ----- Check for existing admin session (via sessionStorage) -----
+      // Verify session is still valid with server
+      if (sessionStorage.getItem('admin_logged_in') === 'true') {
+        fetch('/api/admin/investments', { credentials: 'same-origin' })
+          .then(res => {
+            if (res.status === 401) {
+              sessionStorage.removeItem('admin_logged_in');
+              loginShell.classList.remove('hidden');
+              adminShell.classList.add('hidden');
+              showToast('Session expired. Please login again.', 'error');
+            } else {
+              loginShell.classList.add('hidden');
+              adminShell.classList.remove('hidden');
+              loadAdminData();
+              updateTicker();
+              if (refreshInterval) clearInterval(refreshInterval);
+              refreshInterval = setInterval(async () => {
+                if (!adminShell.classList.contains('hidden')) {
+                  await loadAdminData(false);
+                  await updateTicker();
+                }
+              }, 30000);
+            }
+          })
+          .catch(() => {
+            // If server check fails, show login
+            loginShell.classList.remove('hidden');
+            adminShell.classList.add('hidden');
+          });
+      }
 
+      console.log('Admin page loaded - use admin / admin123');
     })();
   </script>
-
 </body>
 </html>
